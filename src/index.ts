@@ -1,10 +1,10 @@
 import 'reflect-metadata';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { AuthController } from './controllers/auth.controller';
 import { authenticate, authorize } from './middleware/auth.middleware';
-import { UserRole } from './models/user.model';
+import { UserRole } from './types/user.types';
 import { sequelize } from './models';
 
 dotenv.config();
@@ -31,22 +31,25 @@ const initializeDatabase = async () => {
 const authController = new AuthController();
 
 // Routes
-app.post('/api/auth/login', (req, res) => authController.login(req, res));
-app.post('/api/auth/register', authenticate, (req, res) => authController.register(req, res));
+app.post('/api/auth/login', (req: Request, res: Response) => authController.login(req, res));
+app.post('/api/auth/register', authenticate, (req: Request, res: Response) => authController.register(req, res));
 
 // Protected routes
-app.get('/api/users', authenticate, authorize(UserRole.SUPER_ADMIN, UserRole.ADMIN), (req, res) => {
-  // TODO: Implement user listing
+app.get('/api/users', authenticate, authorize([UserRole.SUPER_ADMIN, UserRole.ADMIN]), (_req: Request, res: Response) => {
   res.json({ message: 'User listing endpoint' });
 });
 
-app.get('/api/customers', authenticate, authorize(UserRole.SUPER_ADMIN, UserRole.ADMIN), (req, res) => {
-  // TODO: Implement customer listing
+app.get('/api/customers', authenticate, authorize([UserRole.SUPER_ADMIN, UserRole.ADMIN]), (_req: Request, res: Response) => {
   res.json({ message: 'Customer listing endpoint' });
 });
 
+// Add types to your route handlers
+app.get('/api/health', (_req: Request, res: Response) => {
+  res.json({ status: 'ok' });
+});
+
 // Error handling middleware
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Something went wrong!' });
 });

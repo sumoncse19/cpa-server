@@ -1,6 +1,7 @@
-import jwt, { SignOptions } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { UserRepository } from '../repositories/user.repository';
-import { UserAttributes, UserRole } from '../models/user.model';
+import { UserAttributes } from '../types/user.types';
+import { SignOptions } from 'jsonwebtoken';
 
 export class AuthService {
   private userRepository: UserRepository;
@@ -10,39 +11,32 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<{ token: string; user: Partial<UserAttributes> }> {
-    console.log('=== Login Attempt ===');
-    console.log('Email:', email);
-    console.log('Password:', password);
-    
     const user = await this.userRepository.findByEmail(email);
-    
+
     if (!user) {
-      console.log('❌ User not found');
       throw new Error('Invalid credentials');
     }
 
-    console.log('✅ User found:', JSON.stringify(user.toJSON(), null, 2));
     const isValidPassword = await user.comparePassword(password);
-    console.log('Password validation result:', isValidPassword);
-
     if (!isValidPassword) {
-      console.log('❌ Invalid password');
       throw new Error('Invalid credentials');
     }
 
     if (!user.isActive) {
-      console.log('❌ User is inactive');
       throw new Error('Account is inactive');
     }
 
     const token = this.generateToken(user);
-    const { password: _, ...userWithoutPassword } = user.toJSON();
-    console.log('✅ Login successful');
-    console.log('=== End Login Attempt ===');
 
     return {
       token,
-      user: userWithoutPassword,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role
+      }
     };
   }
 
@@ -65,11 +59,13 @@ export class AuthService {
   private generateToken(user: UserAttributes): string {
     const payload = {
       id: user.id,
-      role: user.role,
+      role: user.role
     };
+
     const options: SignOptions = {
-      expiresIn: process.env.JWT_EXPIRES_IN || '24h',
+      expiresIn: process.env.JWT_EXPIRES_IN ? parseInt(process.env.JWT_EXPIRES_IN) : 86400 // 24 hours in seconds
     };
-    return jwt.sign(payload, process.env.JWT_SECRET || 'your_jwt_secret_key', options);
+
+    return jwt.sign(payload, process.env.JWT_SECRET as string, options);
   }
 } 

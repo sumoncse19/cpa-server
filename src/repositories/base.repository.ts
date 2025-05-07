@@ -1,41 +1,37 @@
-import { Model, ModelCtor } from 'sequelize';
+import { Model, ModelStatic, WhereOptions } from 'sequelize';
+import { UserAttributes } from '../types/user.types';
 
-export abstract class BaseRepository<T extends Model> {
-  protected model: ModelCtor<T>;
+export class BaseRepository<T extends Model> {
+  constructor(protected model: ModelStatic<T>) {}
 
-  constructor(model: ModelCtor<T>) {
-    this.model = model;
+  async findById(id: number): Promise<T | null> {
+    return this.model.findByPk(id);
   }
 
-  async findAll(options: any = {}): Promise<T[]> {
+  async findOne(options: any): Promise<T | null> {
+    return this.model.findOne(options);
+  }
+
+  async findAll(options?: any): Promise<T[]> {
     return this.model.findAll(options);
   }
 
-  async findById(id: number, options: any = {}): Promise<T | null> {
-    return this.model.findByPk(id, options);
+  async create(data: Partial<UserAttributes>): Promise<T> {
+    return this.model.create(data as any);
   }
 
-  async create(data: any): Promise<T> {
-    return this.model.create(data);
-  }
-
-  async update(id: number, data: any): Promise<[number, T[]]> {
-    return this.model.update(data, {
-      where: { id },
-      returning: true,
+  async update(id: number, data: Partial<UserAttributes>): Promise<[number, T[]]> {
+    const where: WhereOptions = { id: id as any };
+    return this.model.update(data as any, {
+      where,
+      returning: true
     });
   }
 
   async delete(id: number): Promise<number> {
+    const where: WhereOptions = { id: id as any };
     return this.model.destroy({
-      where: { id },
+      where
     });
-  }
-
-  async findOne(options: any): Promise<T | null> {
-    console.log('Executing findOne with options:', JSON.stringify(options, null, 2));
-    const result = await this.model.findOne(options);
-    console.log('findOne result:', result?.toJSON());
-    return result;
   }
 } 

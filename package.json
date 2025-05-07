@@ -31,9 +31,9 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.11",
-    "@types/jsonwebtoken": "^9.0.5",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20.10.4",
-    "@types/pg": "^8.10.9",
+    "@types/pg": "^8.15.0",
     "@types/sequelize": "^4.28.20",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
@@ -44,5 +44,17 @@
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sumoncse19/cpa-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sumoncse19/cpa-server/issues"
+  },
+  "homepage": "https://github.com/sumoncse19/cpa-server#readme"
 }
