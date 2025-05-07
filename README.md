@@ -354,7 +354,7 @@ For this project, we recommend **Render** because:
    Environment: Node
    Region: Choose closest to your users
    Branch: main
-   Build Command: npm install && npm install --save-dev @types/express @types/cors @types/jsonwebtoken @types/bcryptjs @types/pg && npm run build
+   Build Command: npm install && npm run build
    Start Command: npm start
    ```
 

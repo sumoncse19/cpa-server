@@ -38,8 +38,7 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
     const user = await userRepository.findById(decoded.id);
 
     if (!user || !user.isActive) {
-      res.status(401).json({ message: 'User not found or inactive' });
-      return;
+      return res.status(401).json({ message: 'User not found or inactive' });
     }
 
     req.user = decoded;
