@@ -8,13 +8,10 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
     "test": "jest",
-    "migrate": "NODE_ENV=development ./node_modules/.bin/sequelize-cli db:migrate",
-    "migrate:undo": "NODE_ENV=development ./node_modules/.bin/sequelize-cli db:migrate:undo",
-    "seed": "NODE_ENV=development ./node_modules/.bin/sequelize-cli db:seed:all",
-    "seed:undo": "NODE_ENV=development ./node_modules/.bin/sequelize-cli db:seed:undo:all",
-    "migrate:prod": "NODE_ENV=production ./node_modules/.bin/sequelize-cli db:migrate",
-    "seed:prod": "NODE_ENV=production ./node_modules/.bin/sequelize-cli db:seed:all",
-    "postbuild": "npm run migrate:prod && npm run seed:prod"
+    "migrate": "NODE_ENV=development sequelize-cli db:migrate",
+    "migrate:undo": "NODE_ENV=development sequelize-cli db:migrate:undo",
+    "seed": "NODE_ENV=development sequelize-cli db:seed:all",
+    "seed:undo": "NODE_ENV=development sequelize-cli db:seed:undo:all"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
